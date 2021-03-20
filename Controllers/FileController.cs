@@ -24,6 +24,7 @@ namespace EPaperSammlung.Controllers
         {
             string logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(logMessage);
+            
             List<string> dirs = Directory.GetFiles(@"/e-paper/").ToList();
             return dirs;
         }
