@@ -11,11 +11,9 @@ steps:
     feedsToUse: 'select'
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'build'
-- task: DotNetCoreCLI@2
-  inputs:
     command: 'publish'
     publishWebProjects: true
+    arguments: '--output $(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
