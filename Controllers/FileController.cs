@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace e_paper_api.Controllers
+namespace EPaperSammlung.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -22,6 +22,8 @@ namespace e_paper_api.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            string logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
+            _logger.LogInformation(logMessage);
             List<string> dirs = Directory.GetFiles(@"/e-paper/").ToList();
             return dirs;
         }
