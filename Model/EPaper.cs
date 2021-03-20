@@ -1,6 +1,6 @@
 using System;
 
-namespace EPaperApi
+namespace EPaperApi.Model
 {
     public class EPaper
     {

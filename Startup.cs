@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -19,6 +20,10 @@ namespace EPaperSammlung
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            //TODO: Ausgliedern in eine Cofig-Datei
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("de-DE");
         }
 
         public IConfiguration Configuration { get; }
