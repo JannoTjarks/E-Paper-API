@@ -4,15 +4,15 @@ namespace EPaperApi
 {
     public class EPaper
     {
-        private string _name = String.Empty;
-        private string _publicationDate = String.Empty;
-        private string _category = String.Empty;
-        private string _filePath = String.Empty;        
-        private string _weekday;
-        private string _imagePath;
+        private readonly string _name;
+        private readonly string _publicationDate;
+        private readonly string _category;
+        private readonly string _filePath;
+        private readonly string _weekday;
+        private readonly string _imagePath;
 
-        EPaper(string name, string publicationDate, string category, 
-               string filePath, string weekday, string imagePath) {
+        public EPaper(string name, string publicationDate, string category, 
+                      string filePath, string weekday, string imagePath) {
             _name = name;
             _publicationDate = publicationDate;
             _category = category;
