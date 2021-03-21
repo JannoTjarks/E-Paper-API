@@ -30,7 +30,6 @@ namespace EPaperSammlung.Controllers
         {
             var logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(logMessage);
-            _logger.LogInformation(_config["CustomSettings:Port"]);
             
             var directoryInfo = new DirectoryInfo(@"/e-paper/").GetFiles().OrderByDescending(f => f.LastWriteTime);            
 

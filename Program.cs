@@ -13,14 +13,23 @@ namespace EPaperSammlung
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();            
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args) {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            var urlHTTP = "http://" + config["CustomSettings:IpAddress"] + ":" + config["CustomSettings:PortHTTP"];
+            var urlHTTPS = "https://" + config["CustomSettings:IpAddress"] + ":" + config["CustomSettings:PortHTTPS"];
+
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls(urlHTTP, urlHTTPS);
                 });
+        }
     }
 }
