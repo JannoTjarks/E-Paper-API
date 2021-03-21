@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
 
 namespace EPaperSammlung.Controllers
 {
@@ -16,10 +17,12 @@ namespace EPaperSammlung.Controllers
     public class FileController : ControllerBase
     {
         private readonly ILogger<FileController> _logger;
+        private readonly IConfiguration _config;
 
-        public FileController(ILogger<FileController> logger)
+        public FileController(ILogger<FileController> logger, IConfiguration config)
         {
             _logger = logger;
+            _config = config;
         }
 
         [HttpGet]
@@ -27,6 +30,7 @@ namespace EPaperSammlung.Controllers
         {
             var logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(logMessage);
+            _logger.LogInformation(_config["CustomSettings:Port"]);
             
             var directoryInfo = new DirectoryInfo(@"/e-paper/").GetFiles().OrderByDescending(f => f.LastWriteTime);            
 
@@ -39,7 +43,18 @@ namespace EPaperSammlung.Controllers
                 var ePaperCategory = fileNameWithoutExtension.Split("_")[3];
                 //TODO: Strings in die Config-Datei ausgliedern!
                 var ePaperPath = "/e-paper/" + fileInfo.Name;
-                var ePaperWeekday = CultureInfo.DefaultThreadCurrentCulture.DateTimeFormat.GetDayName(Convert.ToDateTime(ePaperPublicationDate).DayOfWeek); 
+                string ePaperWeekday;
+                if(_config["CustomSettings:CultureInfo"] != "") 
+                {
+                    CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(_config["CustomSettings:CultureInfo"]);
+                    CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(_config["CustomSettings:CultureInfo"]);   
+                    ePaperWeekday = CultureInfo.DefaultThreadCurrentCulture.DateTimeFormat.GetDayName(Convert.ToDateTime(ePaperPublicationDate).DayOfWeek);                    
+                }
+                else 
+                {
+                   ePaperWeekday = Convert.ToDateTime(ePaperPublicationDate).DayOfWeek.ToString(); 
+                }
+                 
                 var ePaperImagePath = "/e-paper/frontpages/" + fileNameWithoutExtension + ".jpg";
 
                 listOfEPaper.Add(new EPaper(ePaperName, ePaperPublicationDate, ePaperCategory, ePaperPath, ePaperWeekday, ePaperImagePath));

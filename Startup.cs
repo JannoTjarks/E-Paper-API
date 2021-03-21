@@ -19,11 +19,7 @@ namespace EPaperSammlung
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
-
-            //TODO: Ausgliedern in eine Cofig-Datei
-            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("de-DE");
+            Configuration = configuration;                                         
         }
 
         public IConfiguration Configuration { get; }
@@ -35,7 +31,7 @@ namespace EPaperSammlung
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "e_paper_api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EPaper API", Version = "v1" });
             });
         }
 
