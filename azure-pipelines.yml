@@ -4,6 +4,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  - group: 'Production Settings'
+
 steps:
 - task: SonarCloudPrepare@1
   inputs:
