@@ -52,8 +52,6 @@ stages:
       
         variables:
         - group: 'Production Settings'
-        - name: CultureInfo
-          value: $(CultureInfo)
         
         strategy:
             runOnce:
