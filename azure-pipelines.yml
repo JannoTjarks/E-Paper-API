@@ -71,7 +71,7 @@ stages:
                         xmlTransformationRules: ''
                         jsonTargetFiles: 'appsettings.json'
                     - bash: |
-                        cat $(appsettingsfile)
+                        cat /home/vsts/work/1/drop/s/appsettings.json
                       displayName: "Show Json substitution"
 
                     - task: CopyFilesOverSSH@0
