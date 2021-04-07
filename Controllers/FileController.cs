@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 
 namespace EPaperSammlung.Controllers
 {
