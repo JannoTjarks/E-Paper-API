@@ -30,12 +30,10 @@ namespace EPaperSammlung.Controllers
         {
             var logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(logMessage);          
-
-            var listOfEPaper = new List<EPaper>();
-            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);
-            listOfEPaper = database.GetAllEPaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();
+    
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
             
-            return listOfEPaper;            
+            return database.GetAllEPaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();            
         }
     }
 }

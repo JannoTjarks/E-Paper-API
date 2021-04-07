@@ -8,7 +8,7 @@ namespace EPaperSammlung
 {
     public class EPaperDatabase 
     {
-        private MySqlConnection _connection;
+        private readonly MySqlConnection _connection;
         
         public EPaperDatabase(string connectionString) 
         {
