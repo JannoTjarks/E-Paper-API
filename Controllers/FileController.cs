@@ -59,8 +59,23 @@ namespace EPaperSammlung.Controllers
 
                 listOfEPaper.Add(new EPaper(ePaperName, ePaperPublicationDate, ePaperCategory, ePaperPath, ePaperWeekday, ePaperImagePath));
             }
+
+            execute("SELECT * FROM epaper");
             
             return listOfEPaper;            
         }
+
+        public void execute(string sql)
+        {
+            using (var cn = new MySqlConnection(_config["ConnectionStrings:MariaDbConnectionString"].ToString()))
+            using (var cmd = new MySqlCommand(sql,cn))
+            {
+                cn.Open();
+                cmd.ExecuteNonQuery();
+                cn.Close();
+            }
+        }
     }
+
+    
 }
