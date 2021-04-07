@@ -24,13 +24,12 @@ namespace EPaperSammlung
                 .Build();
 
             var urlHTTP = "http://" + config["ServerSettings:IpAddress"] + ":" + config["ServerSettings:PortHTTP"];
-            var urlHTTPS = "https://" + config["ServerSettings:IpAddress"] + ":" + config["ServerSettings:PortHTTPS"];
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls(urlHTTP, urlHTTPS);
+                    webBuilder.UseUrls(urlHTTP);
                 });
         }
     }
