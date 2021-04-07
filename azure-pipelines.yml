@@ -51,8 +51,7 @@ stages:
         environment: Production
       
         variables:        
-          ServerSettings.IpAddress: '127.0.0.1'
-          CultureInfo: 'de-DE'          
+          - group: production-settings
         
         strategy:
             runOnce:
@@ -70,10 +69,6 @@ stages:
                         folderPath: '/home/vsts/work/1/drop/s/'
                         xmlTransformationRules: ''
                         jsonTargetFiles: 'appsettings.json'
-                    - bash: |
-                        cat /home/vsts/work/1/drop/s/appsettings.json
-                      displayName: "Show Json substitution"
-
                     - task: CopyFilesOverSSH@0
                       displayName: 'Securely copy files to the remote machine'
                       inputs:
