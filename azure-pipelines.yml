@@ -66,7 +66,7 @@ stages:
                       displayName: 'Securely copy files to the remote machine'
                       inputs:
                         sshEndpoint: 'root@jtjarks.de'
-                        sourceFolder: '$(System.DefaultWorkingDirectory)'
+                        sourceFolder: '/home/vsts/work/1/drop/s/'
                         targetFolder: '/opt/e-paper-api/'
                         cleanTargetFolder: true
                     - task: SSH@0
