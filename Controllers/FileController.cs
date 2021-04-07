@@ -44,10 +44,10 @@ namespace EPaperSammlung.Controllers
                 //TODO: Strings in die Config-Datei ausgliedern!
                 var ePaperPath = "/e-paper/" + fileInfo.Name;
                 string ePaperWeekday;
-                if(_config["CustomSettings:CultureInfo"] != "") 
+                if(_config["CultureInfo"] != "") 
                 {
-                    CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(_config["CustomSettings:CultureInfo"]);
-                    CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(_config["CustomSettings:CultureInfo"]);   
+                    CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(_config["CultureInfo"]);
+                    CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(_config["CultureInfo"]);   
                     ePaperWeekday = CultureInfo.DefaultThreadCurrentCulture.DateTimeFormat.GetDayName(Convert.ToDateTime(ePaperPublicationDate).DayOfWeek);                    
                 }
                 else 
@@ -76,6 +76,4 @@ namespace EPaperSammlung.Controllers
             }
         }
     }
-
-    
 }
