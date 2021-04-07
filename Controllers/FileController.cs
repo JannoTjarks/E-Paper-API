@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
 
 namespace EPaperSammlung.Controllers
 {
@@ -30,50 +29,13 @@ namespace EPaperSammlung.Controllers
         public List<EPaper> Get()
         {
             var logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation(logMessage);
-            
-            var directoryInfo = new DirectoryInfo(@"/e-paper/").GetFiles().OrderByDescending(f => f.LastWriteTime);            
+            _logger.LogInformation(logMessage);          
 
             var listOfEPaper = new List<EPaper>();
-            foreach(FileInfo fileInfo in directoryInfo)
-            {
-                var fileNameWithoutExtension = fileInfo.Name.Replace(fileInfo.Extension,"");
-                var ePaperName = fileInfo.Name;
-                var ePaperPublicationDate = fileNameWithoutExtension.Split("_")[1].Replace("-", ".");
-                var ePaperCategory = fileNameWithoutExtension.Split("_")[3];
-                //TODO: Strings in die Config-Datei ausgliedern!
-                var ePaperPath = "/e-paper/" + fileInfo.Name;
-                string ePaperWeekday;
-                if(_config["CultureInfo"] != "") 
-                {
-                    CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(_config["CultureInfo"]);
-                    CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(_config["CultureInfo"]);   
-                    ePaperWeekday = CultureInfo.DefaultThreadCurrentCulture.DateTimeFormat.GetDayName(Convert.ToDateTime(ePaperPublicationDate).DayOfWeek);                    
-                }
-                else 
-                {
-                   ePaperWeekday = Convert.ToDateTime(ePaperPublicationDate).DayOfWeek.ToString(); 
-                }
-                 
-                var ePaperImagePath = "/e-paper/frontpages/" + fileNameWithoutExtension + ".jpg";
-
-                listOfEPaper.Add(new EPaper(ePaperName, ePaperPublicationDate, ePaperCategory, ePaperPath, ePaperWeekday, ePaperImagePath));
-            }
-
-            execute("SELECT * FROM epaper");
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);
+            listOfEPaper = database.GetAllEPaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();
             
             return listOfEPaper;            
-        }
-
-        public void execute(string sql)
-        {
-            using (var cn = new MySqlConnection(_config["ConnectionStrings:MariaDbConnectionString"].ToString()))
-            using (var cmd = new MySqlCommand(sql,cn))
-            {
-                cn.Open();
-                cmd.ExecuteNonQuery();
-                cn.Close();
-            }
         }
     }
 }
