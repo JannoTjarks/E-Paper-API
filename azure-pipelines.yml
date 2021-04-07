@@ -30,6 +30,13 @@ steps:
     publishWebProjects: true
     arguments: '--output $(Build.ArtifactStagingDirectory)'
     zipAfterPublish: false
+  
+- task: FileTransform@1
+  inputs:
+    folderPath: '$(Build.ArtifactStagingDirectory)' 
+    fileType: 'json'
+    targetFiles: '**/appsettings.json'
+
 
 - task: PublishBuildArtifacts@1
   inputs:
