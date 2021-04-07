@@ -50,18 +50,30 @@ stages:
         displayName: Production
         environment: Production
       
-        variables:
-        - group: 'Production Settings'
+        variables:        
+          ServerSettings.IpAddress: '127.0.0.1'
+          CultureInfo: 'de-DE'          
         
         strategy:
             runOnce:
-                deploy:
+                deploy:                  
                     steps:
                     - task: SSH@0
                       displayName: 'Stop Service e-paper-api'
                       inputs:
                         sshEndpoint: 'root@jtjarks.de'
                         commands: 'systemctl stop e-paper-api.service'
+                    
+                    - task: FileTransform@2
+                      displayName: "Transform Json"
+                      inputs:
+                        folderPath: '/home/vsts/work/1/drop/s/'
+                        xmlTransformationRules: ''
+                        jsonTargetFiles: 'appsettings.json'
+                    - bash: |
+                        cat $(appsettingsfile)
+                      displayName: "Show Json substitution"
+
                     - task: CopyFilesOverSSH@0
                       displayName: 'Securely copy files to the remote machine'
                       inputs:
