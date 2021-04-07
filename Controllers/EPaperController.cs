@@ -14,12 +14,12 @@ namespace EPaperSammlung.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class FileController : ControllerBase
+    public class EPaperController : ControllerBase
     {
-        private readonly ILogger<FileController> _logger;
+        private readonly ILogger<EPaperController> _logger;
         private readonly IConfiguration _config;
 
-        public FileController(ILogger<FileController> logger, IConfiguration config)
+        public EPaperController(ILogger<EPaperController> logger, IConfiguration config)
         {
             _logger = logger;
             _config = config;
