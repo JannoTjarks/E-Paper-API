@@ -20,6 +20,7 @@ namespace EPaperSammlung
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
                 .Build();
 
             var urlHTTP = "http://" + config["ServerSettings:IpAddress"] + ":" + config["ServerSettings:PortHTTP"];
