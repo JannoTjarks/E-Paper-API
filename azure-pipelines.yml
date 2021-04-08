@@ -76,7 +76,7 @@ stages:
                         sourceFolder: '/home/vsts/work/1/drop/s/'
                         targetFolder: '/opt/e-paper-api/'
                         cleanTargetFolder: true
-		    - task: Docker@2
+                    - task: Docker@2
                       inputs:
                         containerRegistry: 'DockerHub'
                         repository: 'jannotjarks-private'
