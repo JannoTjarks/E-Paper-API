@@ -86,7 +86,7 @@ stages:
                         containerRegistry: 'DockerHub'
                         repository: 'jannotjarks-private'
                         command: 'buildAndPush'
-                        Dockerfile: '**/Dockerfile'
+                        Dockerfile: '/Dockerfile'
                     - task: SSH@0
                       displayName: 'Start Service e-paper-api'
                       inputs:
