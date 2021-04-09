@@ -90,7 +90,7 @@ stages:
                       inputs:
                         sshEndpoint: 'root@docker.jtjarks.de'
                         commands: |
-                          docker rm $(docker stop $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}"))
+                          if [[ $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}") ]]; then docker rm $(docker stop $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}")); else echo "Specified image isn't running!"; fi
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
 
