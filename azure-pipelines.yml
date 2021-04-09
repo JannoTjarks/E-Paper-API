@@ -86,8 +86,7 @@ stages:
                         containerRegistry: 'DockerHub'
                         repository: 'jannotjarks/e-paper-api'
                         command: 'buildAndPush'
-                        Dockerfile: '/home/vsts/work/1/drop/Dockerfile'
-                        buildContext: '/home/vsts/work/1/drop/'
+                        Dockerfile: '/home/vsts/work/1/drop/Dockerfile'                        
                         tags: |
                           $(Build.BuildId)
                           latest
