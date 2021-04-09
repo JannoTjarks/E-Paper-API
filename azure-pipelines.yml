@@ -48,7 +48,7 @@ stages:
           ArtifactName: 'drop'
           publishLocation: 'Container'
   
-  - stage: Deploy to Docker
+  - stage: Deploy-to-Docker
 
     jobs:
       - deployment: Production
@@ -56,7 +56,7 @@ stages:
         environment: Production
       
         variables:        
-          - group: production-settings
+          - group: docker-settings
         
         strategy:
             runOnce:
@@ -94,7 +94,7 @@ stages:
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
 
-  - stage: Deploy to jtjarks.de
+  - stage: Deploy-to-jtjarks_de
 
     jobs:
       - deployment: Production
