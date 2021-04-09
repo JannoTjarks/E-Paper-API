@@ -87,6 +87,9 @@ stages:
                         repository: 'jannotjarks/e-paper-api'
                         command: 'buildAndPush'
                         Dockerfile: '/home/vsts/work/1/drop/Dockerfile'
+                        tags: |
+                          $(Build.BuildId)
+                          latest
                         
                     - task: SSH@0
                       displayName: 'Start Service e-paper-api'
