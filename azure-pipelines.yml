@@ -86,7 +86,7 @@ stages:
                         containerRegistry: 'DockerHub'
                         repository: 'jannotjarks/e-paper-api'
                         command: 'buildAndPush'
-                        Dockerfile: '**/Dockerfile'
+                        Dockerfile: 'Dockerfile'
                         buildContext: '/home/vsts/work/1/drop/'
                         
                     - task: SSH@0
