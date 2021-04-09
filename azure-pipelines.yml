@@ -81,6 +81,12 @@ stages:
                         sourceFolder: '/home/vsts/work/1/drop/s/'
                         targetFolder: '/opt/e-paper-api/'
                         cleanTargetFolder: true
+                      
+                    - task: CmdLine@2
+                      inputs:
+                        script: |
+                          ls -la
+                          ls -la s/
                     - task: Docker@2
                       inputs:
                         containerRegistry: 'DockerHub'
