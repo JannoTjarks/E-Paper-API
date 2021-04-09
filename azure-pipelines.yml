@@ -83,14 +83,19 @@ stages:
                         Dockerfile: '/home/vsts/work/1/drop/Dockerfile'                        
                         tags: |
                           $(Build.BuildId)
-                          latest                                            
+                          latest        
+                          
+                    - task: SSH@0
+                      displayName: 'Refresh Docker Container on docker.jtjarks.de'
+                      inputs:
+                        sshEndpoint: 'root@docker.jtjarks.de'
+                        commands: 'if [[ $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}") ]]; then docker rm $(docker stop $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}")); else echo "Specified image isn't running!"; fi'
 
                     - task: SSH@0
                       displayName: 'Refresh Docker Container on docker.jtjarks.de'
                       inputs:
                         sshEndpoint: 'root@docker.jtjarks.de'
-                        commands: |
-                          if [[ $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}") ]]; then docker rm $(docker stop $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}")); else echo "Specified image isn't running!"; fi
+                        commands: |                          
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
 
