@@ -48,7 +48,53 @@ stages:
           ArtifactName: 'drop'
           publishLocation: 'Container'
   
-  - stage: Deploy
+  - stage: Deploy to Docker
+
+    jobs:
+      - deployment: Production
+        displayName: Production
+        environment: Production
+      
+        variables:        
+          - group: production-settings
+        
+        strategy:
+            runOnce:
+                deploy:                  
+                    steps:                                        
+                    - task: FileTransform@2
+                      displayName: "Transform Json"
+                      inputs:
+                        folderPath: '/home/vsts/work/1/drop/s/'
+                        xmlTransformationRules: ''
+                        jsonTargetFiles: 'appsettings.json'                    
+                      
+                    - task: CmdLine@2
+                      inputs:
+                        script: |
+                          ls -la /home/vsts/work/1/drop/
+                          ls -la /home/vsts/work/1/drop/s/
+
+                    - task: Docker@2
+                      inputs:
+                        containerRegistry: 'DockerHub'
+                        repository: 'jannotjarks/e-paper-api'
+                        command: 'buildAndPush'
+                        Dockerfile: '/home/vsts/work/1/drop/Dockerfile'                        
+                        tags: |
+                          $(Build.BuildId)
+                          latest                                            
+
+                    - task: SSH@0
+                      displayName: 'Refresh Docker Container on docker.jtjarks.de'
+                      inputs:
+                        sshEndpoint: 'root@docker.jtjarks.de'
+                        commands: |
+                          docker rm $(docker stop $(docker ps -a -q --filter ancestor=jannotjarks/e-paper-api:latest --format="{{.ID}}"))
+                          docker pull jannotjarks/e-paper-api:latest
+                          docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
+
+  - stage: Deploy to jtjarks.de
 
     jobs:
       - deployment: Production
@@ -74,6 +120,7 @@ stages:
                         folderPath: '/home/vsts/work/1/drop/s/'
                         xmlTransformationRules: ''
                         jsonTargetFiles: 'appsettings.json'
+
                     - task: CopyFilesOverSSH@0
                       displayName: 'Securely copy files to the remote machine'
                       inputs:
@@ -81,25 +128,9 @@ stages:
                         sourceFolder: '/home/vsts/work/1/drop/s/'
                         targetFolder: '/opt/e-paper-api/'
                         cleanTargetFolder: true
-                      
-                    - task: CmdLine@2
-                      inputs:
-                        script: |
-                          ls -la /home/vsts/work/1/drop/
-                          ls -la /home/vsts/work/1/drop/s/
-                    - task: Docker@2
-                      inputs:
-                        containerRegistry: 'DockerHub'
-                        repository: 'jannotjarks/e-paper-api'
-                        command: 'buildAndPush'
-                        Dockerfile: '/home/vsts/work/1/drop/Dockerfile'                        
-                        tags: |
-                          $(Build.BuildId)
-                          latest
                         
                     - task: SSH@0
                       displayName: 'Start Service e-paper-api'
                       inputs:
                         sshEndpoint: 'root@jtjarks.de'
                         commands: 'systemctl start e-paper-api.service'
-
