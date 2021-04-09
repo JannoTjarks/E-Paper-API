@@ -85,8 +85,8 @@ stages:
                     - task: CmdLine@2
                       inputs:
                         script: |
-                          ls -la
-                          ls -la s/
+                          ls -la /home/vsts/work/1/drop/
+                          ls -la /home/vsts/work/1/drop/s/
                     - task: Docker@2
                       inputs:
                         containerRegistry: 'DockerHub'
