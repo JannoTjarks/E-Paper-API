@@ -48,7 +48,7 @@ stages:
           ArtifactName: 'drop'
           publishLocation: 'Container'
   
-  - stage: Deploy-to-Docker
+  - stage: Deploy_to_Docker
 
     jobs:
       - deployment: Production
@@ -94,7 +94,7 @@ stages:
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
 
-  - stage: Deploy-to-jtjarks_de
+  - stage: Deploy_to_jtjarks_de
 
     jobs:
       - deployment: Production
