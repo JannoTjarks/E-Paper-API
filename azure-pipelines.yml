@@ -86,8 +86,7 @@ stages:
                         containerRegistry: 'DockerHub'
                         repository: 'jannotjarks/e-paper-api'
                         command: 'buildAndPush'
-                        Dockerfile: 'Dockerfile'
-                        buildContext: '/home/vsts/work/1/drop/'
+                        Dockerfile: '/home/vsts/work/1/drop/Dockerfile'
                         
                     - task: SSH@0
                       displayName: 'Start Service e-paper-api'
