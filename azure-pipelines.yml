@@ -54,7 +54,8 @@ stages:
           ArtifactName: 'drop'
           publishLocation: 'Container'
   
-  - stage: Publish to Docker
+  - stage: PublishDocker
+    displayName: Publish to Docker
 
     jobs:
       - job:
@@ -82,9 +83,10 @@ stages:
                 latest
 
   - stage: Deployment
-
     jobs:
-      - deployment: Deployment of Docker Container
+      - deployment: DeploymentDocker
+        displayName: Deployment of Docker Container
+        environment: Production
         
         strategy:
             runOnce:
@@ -104,7 +106,9 @@ stages:
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
       
-      - deployment: Deployment on jtjarks.de with Kestrel
+      - deployment: DeploymentKestrel
+        displayName: Deployment on jtjarks.de with Kestrel
+        environment: Production
       
         variables:
           - group: production-settings
