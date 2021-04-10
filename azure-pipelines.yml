@@ -99,11 +99,36 @@ stages:
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
 
-  - stage: Deploy_to_jtjarks_de
+  - stage: Deployment_Docker
 
     jobs:
-      - deployment: Production
-        displayName: Production
+      - deployment: Deployment
+        displayName: Deployment to docker.jtjarks.de
+        environment: Production            
+        
+        strategy:
+            runOnce:
+                deploy:                  
+                    steps:                                        
+                    - task: SSH@0
+                      displayName: 'Refresh Docker Container on docker.jtjarks.de'
+                      inputs:
+                        sshEndpoint: 'root@docker.jtjarks.de'
+                        commands: '/root/remove-docker-container-by-image.sh jannotjarks/e-paper-api:latest'
+
+                    - task: SSH@0
+                      displayName: 'Refresh Docker Container on docker.jtjarks.de'
+                      inputs:
+                        sshEndpoint: 'root@docker.jtjarks.de'
+                        commands: |                          
+                          docker pull jannotjarks/e-paper-api:latest
+                          docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
+
+  - stage: Deployment_Kestrel
+
+    jobs:
+      - deployment: Deployment
+        displayName: Deployment to jtjarks.de
         environment: Production
       
         variables:        
