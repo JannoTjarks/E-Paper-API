@@ -111,40 +111,40 @@ stages:
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
       
-      - deployment: DeploymentKestrel
-        displayName: Deployment on jtjarks.de with Kestrel
-        environment: Production
+#      - deployment: DeploymentKestrel
+#        displayName: Deployment on jtjarks.de with Kestrel
+#        environment: Production
       
-        variables:
-          - group: production-settings
+#        variables:
+#          - group: production-settings
         
-        strategy:
-            runOnce:
-                deploy:
-                    steps:
-                    - task: FileTransform@2
-                      displayName: "Build appsettings for local kestrel-deployment"
-                      inputs:
-                        folderPath: '/home/vsts/work/1/drop/s/'
-                        xmlTransformationRules: ''
-                        jsonTargetFiles: 'appsettings.json'
+#        strategy:
+#            runOnce:
+#                deploy:
+#                    steps:
+#                    - task: FileTransform@2
+#                      displayName: "Build appsettings for local kestrel-deployment"
+#                      inputs:
+#                        folderPath: '/home/vsts/work/1/drop/s/'
+#                        xmlTransformationRules: ''
+#                        jsonTargetFiles: 'appsettings.json'
                     
-                    - task: SSH@0
-                      displayName: 'Stop Service e-paper-api'
-                      inputs:
-                        sshEndpoint: 'root@jtjarks.de'
-                        commands: 'systemctl stop e-paper-api.service'
+#                    - task: SSH@0
+#                      displayName: 'Stop Service e-paper-api'
+#                      inputs:
+#                        sshEndpoint: 'root@jtjarks.de'
+#                        commands: 'systemctl stop e-paper-api.service'
 
-                    - task: CopyFilesOverSSH@0
-                      displayName: 'Securely copy files to jtjarks.de'
-                      inputs:
-                        sshEndpoint: 'root@jtjarks.de'
-                        sourceFolder: '/home/vsts/work/1/drop/s/'
-                        targetFolder: '/opt/e-paper-api/'
-                        cleanTargetFolder: true
+#                    - task: CopyFilesOverSSH@0
+#                      displayName: 'Securely copy files to jtjarks.de'
+#                      inputs:
+#                        sshEndpoint: 'root@jtjarks.de'
+#                        sourceFolder: '/home/vsts/work/1/drop/s/'
+#                        targetFolder: '/opt/e-paper-api/'
+#                        cleanTargetFolder: true
                         
-                    - task: SSH@0
-                      displayName: 'Start Service e-paper-api'
-                      inputs:
-                        sshEndpoint: 'root@jtjarks.de'
-                        commands: 'systemctl start e-paper-api.service'
+#                    - task: SSH@0
+#                      displayName: 'Start Service e-paper-api'
+#                      inputs:
+#                        sshEndpoint: 'root@jtjarks.de'
+#                        commands: 'systemctl start e-paper-api.service'
