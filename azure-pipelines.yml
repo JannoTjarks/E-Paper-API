@@ -49,7 +49,6 @@ stages:
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
       - task: PublishBuildArtifacts@1
-        displayName: "Publish artifact"
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
           ArtifactName: 'drop'
@@ -57,36 +56,36 @@ stages:
   
   - stage: PublishDocker
     displayName: Publish to Docker
-
+    
     jobs:
-      - job:
-        displayName: Publish to Docker
-        variables:
-          - group: docker-settings
+    - deployment:
+      displayName: Publish to Docker
+      environment: Production
+    
+      variables:
+        - group: docker-settings
+      
+      strategy:
+          runOnce:
+              deploy:
+                  steps:
+                  - task: FileTransform@2
+                    displayName: "Build appsettings for container"
+                    inputs:
+                      folderPath: '/home/vsts/work/1/drop/s/'
+                      xmlTransformationRules: ''
+                      jsonTargetFiles: 'appsettings.json'
 
-        steps:
-          - task: DownloadBuildArtifacts@0
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              downloadPath: '$(System.ArtifactsDirectory)'
-          - task: FileTransform@2
-            displayName: "Build appsettings for container"
-            inputs:
-              folderPath: '/home/vsts/work/1/drop/s/'
-              xmlTransformationRules: ''
-              jsonTargetFiles: 'appsettings.json'
-
-          - task: Docker@2
-            displayName: "Build and publish container"
-            inputs:
-              containerRegistry: 'DockerHub'
-              repository: 'jannotjarks/e-paper-api'
-              command: 'buildAndPush'
-              Dockerfile: '/home/vsts/work/1/drop/Dockerfile'
-              tags: |
-                $(Build.BuildId)
-                latest
+                  - task: Docker@2
+                    displayName: "Build and publish container"
+                    inputs:
+                      containerRegistry: 'DockerHub'
+                      repository: 'jannotjarks/e-paper-api'
+                      command: 'buildAndPush'
+                      Dockerfile: '/home/vsts/work/1/drop/Dockerfile'
+                      tags: |
+                        $(Build.BuildId)
+                        latest
 
   - stage: Deployment
     jobs:
