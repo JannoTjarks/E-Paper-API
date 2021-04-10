@@ -65,6 +65,11 @@ stages:
           - group: docker-settings
 
         steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              downloadPath: '$(System.ArtifactsDirectory)'
           - task: FileTransform@2
             displayName: "Build appsettings for container"
             inputs:
