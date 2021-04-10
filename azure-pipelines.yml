@@ -9,6 +9,7 @@ stages:
 
     jobs: 
     - job :
+      displayName: Build
       steps:
       - task: SonarCloudPrepare@1
         displayName: "Prepare SonarCloud"
@@ -59,7 +60,7 @@ stages:
 
     jobs:
       - job:
-      
+        displayName: Publish to Docker
         variables:
           - group: docker-settings
 
