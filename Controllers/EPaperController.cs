@@ -27,14 +27,38 @@ namespace EPaperSammlung.Controllers
         
         [Route("newest")]
         [HttpGet]
-        public List<EPaper> Get()
+        public List<EPaper> GetNewest()
         {
-            var logMessage = $"JSON-file downloaded at {DateTime.UtcNow.ToLongTimeString()}";
+            var logMessage = $"JSON-file for newest epapers downloaded at {DateTime.UtcNow.ToLongTimeString()}";
+            _logger.LogInformation(logMessage);          
+    
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
+            
+            return database.GetNewestEpaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();            
+        }
+
+        [Route("all")]
+        [HttpGet]
+        public List<EPaper> GetAll()
+        {
+            var logMessage = $"JSON-file for all epapers downloaded at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(logMessage);          
     
             var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
             
             return database.GetAllEPaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();            
+        }
+
+        [Route("{name}")]
+        [HttpGet]
+        public List<EPaper> GetByName(String name)
+        {
+            var logMessage = "JSON-file for " + name + $" downloaded at {DateTime.UtcNow.ToLongTimeString()}";
+            _logger.LogInformation(logMessage);          
+    
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
+            
+            return database.GetEPaperByName(new CultureInfo(_config["CultureInfo"]), name).OrderByDescending(f => f.PublicationDate).ToList();                   
         }
     }
 }
