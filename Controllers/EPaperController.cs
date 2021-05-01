@@ -30,11 +30,11 @@ namespace EPaperSammlung.Controllers
         public List<EPaper> GetNewest()
         {
             var logMessage = $"JSON-file for newest epapers downloaded at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation(logMessage);          
+            _logger.LogInformation(logMessage);
     
-            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);
             
-            return database.GetNewestEpaper();            
+            return database.GetNewestEpaper();
         }
 
         [Route("all")]
@@ -42,11 +42,11 @@ namespace EPaperSammlung.Controllers
         public List<EPaper> GetAll()
         {
             var logMessage = $"JSON-file for all epapers downloaded at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation(logMessage);          
+            _logger.LogInformation(logMessage);
     
-            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);
             
-            return database.GetAllEPaper();            
+            return database.GetAllEPaper();
         }
 
         [Route("{name}")]
@@ -54,11 +54,20 @@ namespace EPaperSammlung.Controllers
         public List<EPaper> GetByName(String name)
         {
             var logMessage = "JSON-file for " + name + $" downloaded at {DateTime.UtcNow.ToLongTimeString()}";
-            _logger.LogInformation(logMessage);          
-    
-            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
-            
-            return database.GetEPaperByName(name);                   
+            _logger.LogInformation(logMessage);  
+
+            var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);
+
+            var epaperNames = database.GetEpaperNames();
+            foreach(var epaperName in epaperNames)
+            {
+                if(epaperName == name)
+                {
+                    return database.GetEPaperByName(epaperName);
+                }
+            }
+
+            return new List<EPaper>();
         }
     }
 }
