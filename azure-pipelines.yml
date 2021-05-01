@@ -8,10 +8,11 @@ stages:
   - stage: Build
 
     jobs: 
-    - job : Build
-    
+    - job :
+      displayName: Build
       steps:
       - task: SonarCloudPrepare@1
+        displayName: "Prepare SonarCloud"
         inputs:
           SonarCloud: 'SonarCloud'
           organization: 'jannotjarks'
@@ -20,17 +21,21 @@ stages:
           projectName: 'E-Paper'
 
       - task: DotNetCoreCLI@2
+        displayName: "Dotnet restore"
         inputs:
           command: 'restore'
           feedsToUse: 'select'
 
       - task: DotNetCoreCLI@2
+        displayName: "Dotnet build"
         inputs:
           command: 'build'
 
       - task: SonarCloudAnalyze@1
+        displayName: "Run SonarCloud analysis"
 
       - task: DotNetCoreCLI@2
+        displayName: "Dotnet publish into artifact"
         inputs:
           command: 'publish'
           publishWebProjects: true
@@ -38,6 +43,7 @@ stages:
           zipAfterPublish: false
           
       - task: CopyFiles@2
+        displayName: "Copy Dockerfile into artifact"
         inputs:
           Contents: 'Dockerfile'
           TargetFolder: '$(Build.ArtifactStagingDirectory)'
@@ -48,56 +54,51 @@ stages:
           ArtifactName: 'drop'
           publishLocation: 'Container'
   
-  - stage: Deploy_to_Docker
-
+  - stage: PublishDocker
+    displayName: Publish to Docker
+    
     jobs:
-      - deployment: Production
-        displayName: Production
-        environment: Production
+    - deployment:
+      displayName: Publish to Docker
+      environment: Production
+    
+      variables:
+        - group: docker-settings
       
-        variables:        
-          - group: docker-settings
-        
-        strategy:
-            runOnce:
-                deploy:                  
-                    steps:                                        
-                    - task: FileTransform@2
-                      displayName: "Transform Json"
-                      inputs:
-                        folderPath: '/home/vsts/work/1/drop/s/'
-                        xmlTransformationRules: ''
-                        jsonTargetFiles: 'appsettings.json'                    
-                      
-                    - task: CmdLine@2
-                      inputs:
-                        script: |
-                          ls -la /home/vsts/work/1/drop/
-                          ls -la /home/vsts/work/1/drop/s/
+      strategy:
+          runOnce:
+              deploy:
+                  steps:
+                  - task: FileTransform@2
+                    displayName: "Build appsettings for container"
+                    inputs:
+                      folderPath: '/home/vsts/work/1/drop/s/'
+                      xmlTransformationRules: ''
+                      jsonTargetFiles: 'appsettings.json'
 
-                    - task: Docker@2
-                      inputs:
-                        containerRegistry: 'DockerHub'
-                        repository: 'jannotjarks/e-paper-api'
-                        command: 'buildAndPush'
-                        Dockerfile: '/home/vsts/work/1/drop/Dockerfile'                        
-                        tags: |
-                          $(Build.BuildId)
-                          latest        
+                  - task: Docker@2
+                    displayName: "Build and publish container"
+                    inputs:
+                      containerRegistry: 'DockerHub'
+                      repository: 'jannotjarks/e-paper-api'
+                      command: 'buildAndPush'
+                      Dockerfile: '/home/vsts/work/1/drop/Dockerfile'
+                      tags: |
+                        $(Build.BuildId)
+                        latest
 
-  - stage: Deployment_Docker
-
+  - stage: Deployment
     jobs:
-      - deployment: Deployment
-        displayName: Deployment to docker.jtjarks.de
-        environment: Production            
+      - deployment: DeploymentDocker
+        displayName: Deployment of Docker Container
+        environment: Production
         
         strategy:
             runOnce:
-                deploy:                  
-                    steps:                                        
+                deploy:
+                    steps:
                     - task: SSH@0
-                      displayName: 'Refresh Docker Container on docker.jtjarks.de'
+                      displayName: 'Stops and removes running Docker Container with the image'
                       inputs:
                         sshEndpoint: 'root@docker.jtjarks.de'
                         commands: '/root/remove-docker-container-by-image.sh jannotjarks/e-paper-api:latest'
@@ -106,47 +107,44 @@ stages:
                       displayName: 'Refresh Docker Container on docker.jtjarks.de'
                       inputs:
                         sshEndpoint: 'root@docker.jtjarks.de'
-                        commands: |                          
+                        commands: | 
                           docker pull jannotjarks/e-paper-api:latest
                           docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
-
-  - stage: Deployment_Kestrel
-
-    jobs:
-      - deployment: Deployment
-        displayName: Deployment to jtjarks.de
-        environment: Production
       
-        variables:        
-          - group: production-settings
+#      - deployment: DeploymentKestrel
+#        displayName: Deployment on jtjarks.de with Kestrel
+#        environment: Production
+      
+#        variables:
+#          - group: production-settings
         
-        strategy:
-            runOnce:
-                deploy:                  
-                    steps:
-                    - task: SSH@0
-                      displayName: 'Stop Service e-paper-api'
-                      inputs:
-                        sshEndpoint: 'root@jtjarks.de'
-                        commands: 'systemctl stop e-paper-api.service'
+#        strategy:
+#            runOnce:
+#                deploy:
+#                    steps:
+#                    - task: FileTransform@2
+#                      displayName: "Build appsettings for local kestrel-deployment"
+#                      inputs:
+#                        folderPath: '/home/vsts/work/1/drop/s/'
+#                        xmlTransformationRules: ''
+#                        jsonTargetFiles: 'appsettings.json'
                     
-                    - task: FileTransform@2
-                      displayName: "Transform Json"
-                      inputs:
-                        folderPath: '/home/vsts/work/1/drop/s/'
-                        xmlTransformationRules: ''
-                        jsonTargetFiles: 'appsettings.json'
+#                    - task: SSH@0
+#                      displayName: 'Stop Service e-paper-api'
+#                      inputs:
+#                        sshEndpoint: 'root@jtjarks.de'
+#                        commands: 'systemctl stop e-paper-api.service'
 
-                    - task: CopyFilesOverSSH@0
-                      displayName: 'Securely copy files to the remote machine'
-                      inputs:
-                        sshEndpoint: 'root@jtjarks.de'
-                        sourceFolder: '/home/vsts/work/1/drop/s/'
-                        targetFolder: '/opt/e-paper-api/'
-                        cleanTargetFolder: true
+#                    - task: CopyFilesOverSSH@0
+#                      displayName: 'Securely copy files to jtjarks.de'
+#                      inputs:
+#                        sshEndpoint: 'root@jtjarks.de'
+#                        sourceFolder: '/home/vsts/work/1/drop/s/'
+#                        targetFolder: '/opt/e-paper-api/'
+#                        cleanTargetFolder: true
                         
-                    - task: SSH@0
-                      displayName: 'Start Service e-paper-api'
-                      inputs:
-                        sshEndpoint: 'root@jtjarks.de'
-                        commands: 'systemctl start e-paper-api.service'
+#                    - task: SSH@0
+#                      displayName: 'Start Service e-paper-api'
+#                      inputs:
+#                        sshEndpoint: 'root@jtjarks.de'
+#                        commands: 'systemctl start e-paper-api.service'
