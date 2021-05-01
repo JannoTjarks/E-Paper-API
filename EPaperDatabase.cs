@@ -70,7 +70,7 @@ namespace EPaperSammlung
         }        
         public List<EPaper> GetEPaperByName(String name) 
         {            
-            var sql = "SELECT epaper_file_path, epaper_frontpage_path, dt, category_name, name_name FROM AllEPaper WHERE name_name LIKE '%" + name + "%';";
+            var sql = "SELECT epaper_file_path, epaper_frontpage_path, dt, category_name, name_name FROM AllEPaper WHERE name_name LIKE '%" + name + "%' ORDER BY dt DESC;";
 
             return GetEpaperFromDatabase(sql);     
         }
