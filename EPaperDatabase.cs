@@ -105,12 +105,24 @@ namespace EPaperSammlung
 
             return GetEpaperFromDatabase(sql);
         }        
-        public List<EPaper> GetEPaperByName(String name) 
+        public List<EPaper> GetEPaperByName(String name, string all) 
         {            
-            var sql = @"SELECT epaper_file_path, epaper_frontpage_path, dt, 
+            var sql = String.Empty;
+
+            if(all == "true") 
+            {
+                sql = @"SELECT epaper_file_path, epaper_frontpage_path, dt, 
                         category_name, name_name
                         FROM AllEPaper WHERE name_name = '" + name + 
                         "' ORDER BY dt DESC;";
+            }
+            else
+            {
+                sql = @"SELECT epaper_file_path, epaper_frontpage_path, dt, 
+                        category_name, name_name
+                        FROM AllEPaper WHERE name_name = '" + name + 
+                        "' ORDER BY dt DESC LIMIT 10;";
+            }
 
             return GetEpaperFromDatabase(sql);     
         }

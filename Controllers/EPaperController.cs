@@ -51,7 +51,7 @@ namespace EPaperSammlung.Controllers
 
         [Route("{name}")]
         [HttpGet]
-        public List<EPaper> GetByName(String name)
+        public List<EPaper> GetByName(String name, [FromQuery]string all)
         {
             var logMessage = "JSON-file for " + name + $" downloaded at {DateTime.UtcNow.ToLongTimeString()}";
             _logger.LogInformation(logMessage);  
@@ -63,7 +63,7 @@ namespace EPaperSammlung.Controllers
             {
                 if(epaperName == name)
                 {
-                    return database.GetEPaperByName(epaperName);
+                    return database.GetEPaperByName(epaperName, all);
                 }
             }
 
