@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 namespace EPaperSammlung.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("")]
     public class EPaperController : ControllerBase
     {
         private readonly ILogger<EPaperController> _logger;
@@ -24,7 +24,8 @@ namespace EPaperSammlung.Controllers
             _logger = logger;
             _config = config;
         }
-
+        
+        [Route("newest")]
         [HttpGet]
         public List<EPaper> Get()
         {
