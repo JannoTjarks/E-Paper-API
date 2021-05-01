@@ -34,7 +34,7 @@ namespace EPaperSammlung.Controllers
     
             var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
             
-            return database.GetNewestEpaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();            
+            return database.GetNewestEpaper();            
         }
 
         [Route("all")]
@@ -46,7 +46,7 @@ namespace EPaperSammlung.Controllers
     
             var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
             
-            return database.GetAllEPaper(new CultureInfo(_config["CultureInfo"])).OrderByDescending(f => f.PublicationDate).ToList();            
+            return database.GetAllEPaper();            
         }
 
         [Route("{name}")]
@@ -58,7 +58,7 @@ namespace EPaperSammlung.Controllers
     
             var database = new EPaperDatabase(_config["ConnectionStrings:MariaDbConnectionString"]);            
             
-            return database.GetEPaperByName(new CultureInfo(_config["CultureInfo"]), name).OrderByDescending(f => f.PublicationDate).ToList();                   
+            return database.GetEPaperByName(name);                   
         }
     }
 }

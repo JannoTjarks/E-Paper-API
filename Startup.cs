@@ -19,7 +19,10 @@ namespace EPaperSammlung
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;                                         
+            Configuration = configuration;
+
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo(Configuration["CultureInfo"]);
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo(Configuration["CultureInfo"]);
         }
 
         public IConfiguration Configuration { get; }
