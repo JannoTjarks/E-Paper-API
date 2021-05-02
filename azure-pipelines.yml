@@ -75,7 +75,7 @@ stages:
                   - task: FileTransform@2
                     displayName: "Build appsettings for container"
                     inputs:
-                      folderPath: '/home/vsts/work/1/drop/s/'
+                      folderPath: '/home/vsts/work/1/drop/src/'
                       xmlTransformationRules: ''
                       jsonTargetFiles: 'appsettings.json'
 
