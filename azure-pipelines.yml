@@ -40,8 +40,9 @@ stages:
         displayName: "Dotnet publish into artifact"
         inputs:
           command: 'publish'
-          publishWebProjects: true
-          arguments: './src/e-paper-api.csproj --output $(Build.ArtifactStagingDirectory)'
+          publishWebProjects: false
+          projects: './src/e-paper-api.csproj'
+          arguments: '--output $(Build.ArtifactStagingDirectory)'
           zipAfterPublish: false
           
       - task: CopyFiles@2
