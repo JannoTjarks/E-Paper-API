@@ -31,7 +31,7 @@ stages:
         displayName: "Dotnet build"
         inputs:
           command: 'build'
-          projects: './src/'
+          projects: './src/e-paper-api.csproj'
 
       - task: SonarCloudAnalyze@1
         displayName: "Run SonarCloud analysis"
