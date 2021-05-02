@@ -24,12 +24,14 @@ stages:
         displayName: "Dotnet restore"
         inputs:
           command: 'restore'
+          restoreArguments: './src/'
           feedsToUse: 'select'
 
       - task: DotNetCoreCLI@2
         displayName: "Dotnet build"
         inputs:
           command: 'build'
+          projects: './src/'
 
       - task: SonarCloudAnalyze@1
         displayName: "Run SonarCloud analysis"
@@ -39,7 +41,7 @@ stages:
         inputs:
           command: 'publish'
           publishWebProjects: true
-          arguments: '--output $(Build.ArtifactStagingDirectory)'
+          arguments: './src/ --output $(Build.ArtifactStagingDirectory)'
           zipAfterPublish: false
           
       - task: CopyFiles@2

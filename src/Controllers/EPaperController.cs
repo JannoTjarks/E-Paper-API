@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 namespace EPaperSammlung.Controllers
 {
     [ApiController]
-    [Route("")]
+    [Route("epaper")]
     public class EPaperController : ControllerBase
     {
         private readonly ILogger<EPaperController> _logger;
