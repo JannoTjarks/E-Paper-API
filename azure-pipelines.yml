@@ -112,7 +112,7 @@ stages:
                         sshEndpoint: 'root@docker.jtjarks.de'
                         commands: | 
                           docker pull jannotjarks/e-paper-api:latest
-                          docker run -p 8080:80 -d jannotjarks/e-paper-api:latest
+                          docker run -p 8080:80 -d jannotjarks/e-paper-api:latest --restart
       
 #      - deployment: DeploymentKestrel
 #        displayName: Deployment on jtjarks.de with Kestrel
