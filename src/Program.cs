@@ -17,8 +17,7 @@ namespace EPaperSammlung
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
+            var config = new ConfigurationBuilder()                
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
@@ -29,7 +28,7 @@ namespace EPaperSammlung
 
             return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(builder =>
-                {                
+                {
                     builder.AddConfiguration(config);                    
                 }) 
                 .ConfigureWebHostDefaults(webBuilder =>
