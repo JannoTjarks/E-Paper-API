@@ -18,14 +18,20 @@ namespace EPaperSammlung
 
         public static IHostBuilder CreateHostBuilder(string[] args) {
             var config = new ConfigurationBuilder()
+                .SetBasePath(System.IO.Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.Development.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
                 .Build();
 
             var urlHTTP = "http://" + config["ServerSettings:IpAddress"] + ":" + config["ServerSettings:PortHTTP"];
+            Console.WriteLine(urlHTTP);
 
             return Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(builder =>
+                {                
+                    builder.AddConfiguration(config);                    
+                }) 
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
