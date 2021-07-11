@@ -104,7 +104,7 @@ stages:
                       displayName: 'Stops and removes running Docker Container with the image'
                       inputs:
                         sshEndpoint: 'root@docker.jtjarks.de'
-                        commands: '/root/remove-docker-container-by-image.sh jannotjarks/e-paper-api:latest'
+                        commands: 'bash /root/remove-docker-container-by-image.sh jannotjarks/e-paper-api:latest'
 
                     - task: SSH@0
                       displayName: 'Refresh Docker Container on docker.jtjarks.de'
